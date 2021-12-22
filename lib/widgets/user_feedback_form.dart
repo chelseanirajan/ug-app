@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:ug_app/widgets/speech_to_text.dart';
 import 'package:ug_app/widgets/user_image_picker.dart';
 
 class UserFeedbackForm extends StatefulWidget {
@@ -21,11 +22,15 @@ class _UserFeedbackFormState extends State<UserFeedbackForm> {
   var _year = '';
   var _subject = '';
   var _feedback = '';
-  var _comment = '';
+  // var _comment = '';
+  String _speechText;
   BuildContext ctx;
   File _userImageFile;
   void _pickedImage(File image){
     _userImageFile = image;
+  }
+  void _textFromSpeech(String text){
+    _speechText = text;
   }
 
 
@@ -38,7 +43,8 @@ class _UserFeedbackFormState extends State<UserFeedbackForm> {
     }
     if (isValid) {
       _formKey.currentState.save();
-      widget.submitFn(_course,_year,_subject,_feedback,_comment,_userImageFile, context, _formKey);
+      widget.submitFn(_course,_year,_subject,_feedback,_speechText,_userImageFile, context, _formKey);
+      print(_speechText);
     }
   }
   @override
@@ -181,41 +187,46 @@ class _UserFeedbackFormState extends State<UserFeedbackForm> {
                       ),
                     ),
                     //audio file
+                    // Container(
+                    //   margin: const EdgeInsets.symmetric(vertical: 10.0),
+                    //   child: TextFormField(
+                    //     maxLines: 3,
+                    //     keyboardType: TextInputType.multiline,
+                    //     textInputAction: TextInputAction.next,
+                    //     decoration: const InputDecoration(
+                    //       labelText: 'Comment',
+                    //       labelStyle: TextStyle(fontSize: 20.0),
+                    //       border: OutlineInputBorder(),
+                    //       errorStyle:
+                    //       TextStyle(color: Colors.redAccent, fontSize: 15),
+                    //     ),
+                    //       validator: (value) {
+                    //         if (value.isEmpty) {
+                    //           return 'Please enter a comment.';
+                    //         }
+                    //         if (value.length < 10) {
+                    //           return 'please enter at least 10 character comment';
+                    //         }
+                    //         return null;
+                    //       },
+                    //     onSaved: (value) {
+                    //       setState(() {
+                    //         _comment = value;
+                    //       });
+                    //     },
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 20),
                     Container(
                       margin: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: TextFormField(
-                        maxLines: 3,
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.next,
-                        decoration: const InputDecoration(
-                          labelText: 'Comment',
-                          labelStyle: TextStyle(fontSize: 20.0),
-                          border: OutlineInputBorder(),
-                          errorStyle:
-                          TextStyle(color: Colors.redAccent, fontSize: 15),
-                        ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter a comment.';
-                            }
-                            if (value.length < 10) {
-                              return 'please enter at least 10 character comment';
-                            }
-                            return null;
-                          },
-                        onSaved: (value) {
-                          setState(() {
-                            _comment = value;
-                          });
-                        },
-                      ),
+                      child: SpeechToText(_textFromSpeech),
                     ),
-                    const SizedBox(height: 20),
+                    // const SizedBox(height: 20),
                     Container(
                       margin: const EdgeInsets.symmetric(vertical: 10.0),
                       child: UserImagePicker(_pickedImage),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     Container(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
